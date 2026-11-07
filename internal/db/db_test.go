@@ -46,6 +46,7 @@ var dbInstance db.DbIf
 
 func TestDb(t *testing.T) {
 	t.Run("Bbolt DB", testBboltDb)
+	t.Run("Custom DB", testCustomDb)
 }
 
 func testBboltDb(t *testing.T) {
@@ -64,9 +65,15 @@ func testBboltDb(t *testing.T) {
 	t.Run("Multiple Data Operations", testMultipleDataOperations)
 }
 
+// The custom DB (MongoDB) needs a running MongoDB, which CI and TA's environment do not have.
+// Run it with: NSF_TEST_MONGODB=1 go test -v ./internal/db/
 func testCustomDb(t *testing.T) {
+	if os.Getenv("NSF_TEST_MONGODB") == "" {
+		t.Skip("set NSF_TEST_MONGODB=1 to test the MongoDB custom DB")
+	}
+
 	var err error
-	dbInstance, err = db.NewDb("custom") // TODO: change "custom" to the actual name of your custom DB implementation
+	dbInstance, err = db.NewDb("mongodb")
 	if err != nil {
 		t.Fatalf("Failed to create DB instance: %v", err)
 	}

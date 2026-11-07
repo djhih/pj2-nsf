@@ -22,7 +22,8 @@ func NewDb(dbType string) (DbIf, error) {
 	switch dbType {
 	case "bbolt":
 		return newBboltDb(NSF_DB_PATH)
-	// TODO: Add support for the customDb type here
+	case "mongodb":
+		return newMongoDb(mongoDbUri)
 	}
 	return nil, fmt.Errorf("unsupported db type: %s", dbType)
 }
